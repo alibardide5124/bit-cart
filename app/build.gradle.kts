@@ -55,11 +55,19 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation)
     implementation(libs.kotlinx.serializable)
-
+    implementation(libs.ktor.okhttp)
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
+    // Supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.auth)
+    // Google Auth
+    implementation(libs.androidx.credintials)
+    implementation(libs.androidx.credintials.play)
+    implementation(libs.google.id)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -16,7 +16,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = NavDestination.Login,
+        startDestination = NavDestination.Home,
         modifier = Modifier.fillMaxSize()
     ) {
         composable<NavDestination.Home> {

@@ -18,12 +18,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.phoenix.bit_cart.R
@@ -34,7 +34,8 @@ fun LoginScreen(
     onUsernameChange: (String) -> Unit,
     password: String,
     onPasswordChange: (String) -> Unit,
-    onClickPasswordLogin: () -> Unit,
+    onClickLogin: () -> Unit,
+    onClickRegister: () -> Unit,
     onClickGoogleLogin: () -> Unit
 ) {
     Scaffold { innerPadding ->
@@ -67,15 +68,24 @@ fun LoginScreen(
                     value = password,
                     onValueChange = onPasswordChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Password") }
+                    placeholder = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation()
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
                     shape = RoundedCornerShape(8.dp),
-                    onClick = onClickPasswordLogin,
+                    onClick = onClickLogin,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Login / Register")
+                    Text(text = "Login")
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = onClickRegister,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Register")
                 }
                 Spacer(Modifier.height(24.dp))
                 HorizontalDivider(Modifier.fillMaxWidth().padding(horizontal = 16.dp))

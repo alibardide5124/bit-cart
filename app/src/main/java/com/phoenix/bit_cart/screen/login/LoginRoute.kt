@@ -16,7 +16,8 @@ fun LoginRoute(
         onUsernameChange = { loginViewModel.onEvent(LoginUiEvent.OnUsernameChange(it)) },
         password = uiState.password,
         onPasswordChange = { loginViewModel.onEvent(LoginUiEvent.OnPasswordChange(it)) },
-        onClickPasswordLogin = { loginViewModel.onEvent(LoginUiEvent.OnPasswordLogin) },
-        onClickGoogleLogin = { loginViewModel.onEvent(LoginUiEvent.OnGoogleLogin) }
+        onClickLogin = { loginViewModel.onEvent(LoginUiEvent.Login) },
+        onClickRegister = { loginViewModel.onEvent(LoginUiEvent.Register)},
+        onClickGoogleLogin = { loginViewModel.onEvent(LoginUiEvent.GoogleLogin) }
     )
 }
