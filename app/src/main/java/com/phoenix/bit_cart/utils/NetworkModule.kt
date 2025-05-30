@@ -2,6 +2,7 @@ package com.phoenix.bit_cart.utils
 
 import android.content.Context
 import com.phoenix.bit_cart.data.AuthManager
+import com.phoenix.bit_cart.data.ProductManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,5 +36,10 @@ object NetworkModule {
     @Singleton
     fun provideAuthManager(@ApplicationContext context: Context, supabase: SupabaseClient) =
         AuthManager(context, supabase)
+
+    @Provides
+    @Singleton
+    fun provideProductManager(supabase: SupabaseClient) =
+        ProductManager(supabase)
 
 }
