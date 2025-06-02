@@ -9,9 +9,13 @@ import com.phoenix.bit_cart.data.model.Product
 @Composable
 fun DetailsRoute(
     detailsViewModel: DetailsViewModel = hiltViewModel(),
-    product: Product
+    product: Product,
+    navigateBack: () -> Unit
 ) {
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
-    DetailsScreen(product = product)
+    DetailsScreen(
+        product = product,
+        onClickBack = { navigateBack() }
+    )
 }

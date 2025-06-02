@@ -3,6 +3,7 @@ package com.phoenix.bit_cart.screen.details
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,23 +39,15 @@ import coil3.compose.AsyncImage
 import com.phoenix.bit_cart.data.model.Product
 import com.phoenix.bit_cart.ui.theme.BitCartTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    product: Product?
+    product: Product?,
+    onClickBack: () -> Unit
 ) {
+    // TODO: ADD TO CART
+    // TODO: CATEGORY ITEMS LIST
+    // TODO: CART ITEM COUNT
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back to home"
-                    )
-                }
-            )
-        },
         bottomBar = {
             AnimatedVisibility(product != null) {
                 Row(
@@ -110,25 +101,25 @@ fun DetailsScreen(
                         .padding(innerPadding)
                 ) {
                     Box(
-                        modifier = Modifier.aspectRatio(2 / 1f)
+                        modifier = Modifier.aspectRatio(1.5f / 1f)
                     ) {
                         product!!.imageUrl?.get(0).let {
                             AsyncImage(
                                 model = it,
                                 contentDescription = null,
-                                contentScale = ContentScale.FillWidth
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(32.dp)
+                                .fillMaxSize()
                                 .align(Alignment.BottomCenter)
                                 .background(
                                     brush = Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            Color.Black.copy(alpha = .4f)
+                                            MaterialTheme.colorScheme.background.copy(alpha = .4f)
                                         )
                                     )
                                 )
@@ -140,6 +131,17 @@ fun DetailsScreen(
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
                                 .padding(vertical = 12.dp, horizontal = 16.dp)
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "Back to home",
+                            tint = MaterialTheme.colorScheme.background,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(MaterialTheme.colorScheme.onBackground)
+                                .clickable { onClickBack() }
+                                .padding(8.dp)
                         )
                     }
                     Spacer(Modifier.height(16.dp))
@@ -155,9 +157,15 @@ fun DetailsScreen(
                         Text(
                             text = it,
                             fontSize = 18.sp,
-                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+                            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
+                    Spacer(Modifier.height(32.dp))
+                    Text(
+                        text = "SKU: ${product.sku}",
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
                 }
             }
         }
@@ -181,7 +189,8 @@ private fun DetailsPreview() {
                 categoryId = "MBD",
                 categoryName = "Motherboards",
                 createdAt = "Sometime"
-            )
+            ),
+            {}
         )
     }
 }

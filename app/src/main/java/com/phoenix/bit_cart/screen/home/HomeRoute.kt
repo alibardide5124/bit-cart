@@ -9,7 +9,8 @@ import com.phoenix.bit_cart.data.model.Product
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetails: (Product) -> Unit
+    navigateToAbout: () -> Unit,
+    navigateToDetails: (Product) -> Unit,
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val products by homeViewModel.products.collectAsStateWithLifecycle()
@@ -18,6 +19,7 @@ fun HomeRoute(
         isLoading = uiState.isLoading,
         products = products,
         onTryAgain = { homeViewModel.onEvent(HomeUiEvent.Refresh) },
+        onClickAbout = { navigateToAbout() },
         onClickProduct = { navigateToDetails(it) }
     )
 }
