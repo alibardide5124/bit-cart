@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.phoenix.bit_cart.data.model.Product
+import com.phoenix.bit_cart.screen.details.DetailsRoute
 import com.phoenix.bit_cart.screen.home.HomeRoute
 import com.phoenix.bit_cart.screen.login.LoginRoute
 import kotlinx.serialization.Serializable
@@ -25,6 +27,9 @@ fun AppNavigation() {
         composable<NavDestination.Login> {
             LoginRoute()
         }
+        composable<NavDestination.Details> {
+            DetailsRoute()
+        }
     }
 }
 
@@ -33,4 +38,6 @@ sealed interface NavDestination {
     object Home
     @Serializable
     object Login
+    @Serializable
+    data class Details(val product: Product)
 }

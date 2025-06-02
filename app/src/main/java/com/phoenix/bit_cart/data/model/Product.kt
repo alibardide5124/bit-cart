@@ -13,7 +13,7 @@ data class Product(
     val stock: Int,
     val available: Boolean,
     @SerialName("image_url")
-    val imageUrl: String?,
+    val imageUrl: List<String>?,
     @SerialName("category_id")
     val categoryId: String,
     @SerialName("category_name")

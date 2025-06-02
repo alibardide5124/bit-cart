@@ -18,6 +18,7 @@ serializable = "1.8.1"
 supabaseBom = "3.1.4"
 ktor = "3.1.3"
 credentials = "1.5.0"
+coil = "3.2.0"
 
 googleid = "1.1.1"
 
@@ -49,7 +50,8 @@ ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor"}
 androidx-credintials = { module = "androidx.credentials:credentials", version.ref = "credentials"}
 androidx-credintials-play = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials"}
 google-id = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
-
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

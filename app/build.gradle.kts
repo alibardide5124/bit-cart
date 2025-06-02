@@ -68,6 +68,9 @@ dependencies {
     implementation(libs.androidx.credintials)
     implementation(libs.androidx.credintials.play)
     implementation(libs.google.id)
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
