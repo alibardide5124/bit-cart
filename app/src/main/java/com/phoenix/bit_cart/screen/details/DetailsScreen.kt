@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -114,7 +115,8 @@ fun DetailsScreen(
                         product!!.imageUrl?.get(0).let {
                             AsyncImage(
                                 model = it,
-                                contentDescription = null
+                                contentDescription = null,
+                                contentScale = ContentScale.FillWidth
                             )
                         }
                         Box(
