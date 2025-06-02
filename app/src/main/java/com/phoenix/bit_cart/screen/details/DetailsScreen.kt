@@ -21,12 +21,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -83,14 +85,14 @@ fun DetailsScreen(
                             )
                         }
                     }
-                }
-                Spacer(Modifier.width(8.dp))
-                Button(
-                    onClick = {},
-                    shape = RoundedCornerShape(8.dp),
-                    enabled = product!!.available
-                ) {
-                    Text("Add to cart")
+                    Spacer(Modifier.width(8.dp))
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = product!!.available
+                    ) {
+                        Text("Add to cart")
+                    }
                 }
             }
         }
@@ -138,7 +140,16 @@ fun DetailsScreen(
                                 .padding(vertical = 12.dp, horizontal = 16.dp)
                         )
                     }
-                    product!!.description?.let {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Products > ${product!!.categoryName}",
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(topEnd = 6.dp, bottomEnd = 6.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(vertical = 4.dp, horizontal = 6.dp)
+                    )
+                    product.description?.let {
                         Text(
                             text = it,
                             fontSize = 18.sp,

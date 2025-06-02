@@ -38,6 +38,7 @@ fun HomeScreen(
     isLoading: LoadingStatus,
     products: List<Product>,
     onTryAgain: () -> Unit,
+    onClickProduct: (Product) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -97,7 +98,8 @@ fun HomeScreen(
                     items(products, key = { it.id }) {
                         HomeProductWidget(
                             modifier = Modifier.fillMaxWidth(),
-                            product = it
+                            product = it,
+                            onClick = { onClickProduct(it) }
                         )
                     }
                 }
