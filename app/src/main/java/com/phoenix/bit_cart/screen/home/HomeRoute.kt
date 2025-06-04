@@ -1,5 +1,6 @@
 package com.phoenix.bit_cart.screen.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +39,10 @@ fun HomeRoute(
     val products by homeViewModel.products.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    BackHandler(uiState.isSearching) {
+        homeViewModel.onEvent(HomeUiEvent.CloseSearch)
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -87,10 +92,15 @@ fun HomeRoute(
     ) {
         HomeScreen(
             isLoading = uiState.isLoading,
+            isSearching = uiState.isSearching,
+            searchQuery = uiState.searchQuery,
             products = products,
             onTryAgain = { homeViewModel.onEvent(HomeUiEvent.Refresh) },
             onClickDrawerMenu = { coroutineScope.launch { drawerState.open() } },
-            onClickProduct = { navigateToDetails(it) }
+            onClickSearch = { homeViewModel.onEvent(HomeUiEvent.StartSearch) },
+            onClickProduct = { navigateToDetails(it) },
+            onClickCloseSearch = { homeViewModel.onEvent(HomeUiEvent.CloseSearch) },
+            onSearchQueryChange = { homeViewModel.onEvent(HomeUiEvent.OnSearchQueryChanged(it))}
         )
     }
 }

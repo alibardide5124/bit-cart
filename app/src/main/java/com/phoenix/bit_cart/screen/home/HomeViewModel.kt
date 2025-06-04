@@ -31,6 +31,16 @@ class HomeViewModel @Inject constructor(
         when(event) {
             HomeUiEvent.Refresh ->
                 getAllProducts()
+
+            HomeUiEvent.StartSearch ->
+                _uiState.update { it.copy(isSearching = true) }
+
+            is HomeUiEvent.OnSearchQueryChanged ->
+                _uiState.update { it.copy(searchQuery = event.query) }
+
+            HomeUiEvent.CloseSearch ->
+                _uiState.update { it.copy(isSearching = false, searchQuery = "") }
+
         }
     }
 
