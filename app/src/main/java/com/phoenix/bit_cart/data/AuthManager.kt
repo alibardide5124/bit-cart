@@ -11,8 +11,8 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.IDToken
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import io.github.jan.supabase.auth.user.UserInfo
+import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.util.UUID
 
@@ -22,31 +22,50 @@ sealed interface AuthResponse {
 }
 
 class AuthManager(
-    val context: Context,
     val supabase: SupabaseClient
 ) {
 
-    fun signUpWithEmail(username: String, password: String): Flow<AuthResponse> = flow {
+    suspend fun isLoggedIn(): Boolean = runBlocking {
+        supabase.auth.awaitInitialization()
+        return@runBlocking supabase.auth.currentUserOrNull() != null
+    }
+
+
+    fun getUserInfo(): UserInfo? =
+        supabase.auth.currentUserOrNull()
+
+    suspend fun logout(): AuthResponse {
+        try {
+            supabase.auth.signOut()
+            return AuthResponse.Success
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return AuthResponse.Error(e.message)
+        }
+    }
+    suspend fun signUpWithEmail(username: String, password: String): AuthResponse {
         try {
             supabase.auth.signUpWith(Email) {
                 this.email = username
                 this.password = password
             }
-            emit(AuthResponse.Success)
+            return AuthResponse.Success
         } catch (e: Exception) {
-            emit(AuthResponse.Error(e.message))
+            e.printStackTrace()
+            return AuthResponse.Error(e.message)
         }
     }
 
-    fun signInWithEmail(username: String, password: String): Flow<AuthResponse> = flow {
+    suspend fun signInWithEmail(username: String, password: String): AuthResponse {
         try {
             supabase.auth.signInWith(Email) {
                 this.email = username
                 this.password = password
             }
-            emit(AuthResponse.Success)
+            return AuthResponse.Success
         } catch (e: Exception) {
-            emit(AuthResponse.Error(e.message))
+            e.printStackTrace()
+            return AuthResponse.Error(e.message)
         }
     }
 
@@ -61,7 +80,7 @@ class AuthManager(
         }
     }
 
-    fun loginGoogleUser(): Flow<AuthResponse> = flow {
+    suspend fun loginGoogleUser(context: Context): AuthResponse {
         val hashedNonce = createNonce()
 
         val googleIdOption = GetGoogleIdOption.Builder()
@@ -90,9 +109,10 @@ class AuthManager(
                 idToken = googleIdToken
                 provider = Google
             }
-            emit(AuthResponse.Success)
+            return AuthResponse.Success
         } catch (e: Exception) {
-            emit(AuthResponse.Error(e.message))
+            e.printStackTrace()
+            return AuthResponse.Error(e.message)
         }
     }
 

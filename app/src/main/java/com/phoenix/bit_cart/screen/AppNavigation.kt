@@ -31,11 +31,21 @@ fun AppNavigation() {
         composable<NavDestination.Home> {
             HomeRoute(
                 navigateToAbout = { navController.navigate(NavDestination.About) },
+                navigateToCart = {   },
+                navigateToLogin = { navController.navigate(NavDestination.Login)},
                 navigateToDetails = { navController.navigate(NavDestination.Details(it)) }
             )
         }
         composable<NavDestination.Login> {
-            LoginRoute()
+            LoginRoute(
+                navigateAfterLogin = {
+                    navController.navigate(NavDestination.Home) {
+                        popUpTo(NavDestination.Login) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
         composable<NavDestination.Details>(
             typeMap = mapOf(

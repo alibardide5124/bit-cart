@@ -1,5 +1,6 @@
 package com.phoenix.bit_cart.screen.login
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -23,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,8 +36,10 @@ import com.phoenix.bit_cart.R
 fun LoginScreen(
     username: String,
     onUsernameChange: (String) -> Unit,
+    usernameError: Boolean,
     password: String,
     onPasswordChange: (String) -> Unit,
+    passwordError: Boolean,
     onClickLogin: () -> Unit,
     onClickRegister: () -> Unit,
     onClickGoogleLogin: () -> Unit
@@ -61,16 +67,31 @@ fun LoginScreen(
                     value = username,
                     onValueChange = onUsernameChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Email") }
+                    placeholder = { Text("Email") },
+                    isError = usernameError,
                 )
+                AnimatedVisibility(usernameError) {
+                    Text(
+                        text = "Invalid email address",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = password,
                     onValueChange = onPasswordChange,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isError = passwordError
                 )
+                AnimatedVisibility(passwordError) {
+                    Text(
+                        text = "Password must be 8 chars long with alphabets and digits",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 Button(
                     shape = RoundedCornerShape(8.dp),

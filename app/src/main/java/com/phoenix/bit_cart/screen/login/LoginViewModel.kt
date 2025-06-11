@@ -1,16 +1,23 @@
 package com.phoenix.bit_cart.screen.login
 
+import android.content.Context
 import android.util.Patterns
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.phoenix.bit_cart.data.AuthManager
+import com.phoenix.bit_cart.data.AuthResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class LoginViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
     val authManager: AuthManager
 ) : ViewModel() {
 
@@ -37,8 +44,8 @@ class LoginViewModel @Inject constructor(
             LoginUiEvent.Register ->
                 registerWithPassword()
 
-            LoginUiEvent.GoogleLogin ->
-                loginWithGoogle()
+            is LoginUiEvent.GoogleLogin ->
+                loginWithGoogle(event.context)
         }
     }
 
@@ -49,7 +56,12 @@ class LoginViewModel @Inject constructor(
 
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            authManager.signInWithEmail(username, password)
+            val result = authManager.signInWithEmail(username, password)
+            if (result == AuthResponse.Success) {
+                _uiState.update { it.copy(isLoggedIn = true) }
+            } else if (result is AuthResponse.Error && result.message!!.contains("Invalid login credentials")) {
+                Toast.makeText(context, "Email or Password is incorrect", Toast.LENGTH_SHORT).show()
+            }
         }.invokeOnCompletion {
             _uiState.update { it.copy(isLoading = false) }
         }
@@ -62,16 +74,20 @@ class LoginViewModel @Inject constructor(
 
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            authManager.signUpWithEmail(username, password)
+            val result = authManager.signUpWithEmail(username, password)
+            if (result == AuthResponse.Success)
+                _uiState.update { it.copy(isLoggedIn = true) }
         }.invokeOnCompletion {
             _uiState.update { it.copy(isLoading = false) }
         }
     }
 
-    private fun loginWithGoogle() {
+    private fun loginWithGoogle(context: Context) {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            authManager.loginGoogleUser()
+            val result = authManager.loginGoogleUser(context)
+            if (result == AuthResponse.Success)
+                _uiState.update { it.copy(isLoggedIn = true) }
         }.invokeOnCompletion {
             _uiState.update { it.copy(isLoading = false) }
         }

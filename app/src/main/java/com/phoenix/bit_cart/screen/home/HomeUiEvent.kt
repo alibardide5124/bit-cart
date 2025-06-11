@@ -5,4 +5,5 @@ sealed interface HomeUiEvent {
     data object StartSearch: HomeUiEvent
     data class OnSearchQueryChanged(val query: String): HomeUiEvent
     data object CloseSearch: HomeUiEvent
+    data object Logout: HomeUiEvent
 }

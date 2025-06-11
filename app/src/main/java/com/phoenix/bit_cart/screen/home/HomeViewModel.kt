@@ -3,6 +3,8 @@ package com.phoenix.bit_cart.screen.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.phoenix.bit_cart.data.AuthManager
+import com.phoenix.bit_cart.data.AuthResponse
 import com.phoenix.bit_cart.data.ProductManager
 import com.phoenix.bit_cart.data.ProductResponse
 import com.phoenix.bit_cart.data.model.Product
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val productManager: ProductManager
+    val productManager: ProductManager,
+    val authManager: AuthManager
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -24,6 +27,11 @@ class HomeViewModel @Inject constructor(
     val products = _products.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            checkLogin()
+            if (uiState.value.isLoggedIn)
+                retrieveUserInfo()
+        }
         getAllProducts()
     }
 
@@ -41,6 +49,19 @@ class HomeViewModel @Inject constructor(
             HomeUiEvent.CloseSearch ->
                 _uiState.update { it.copy(isSearching = false, searchQuery = "") }
 
+            HomeUiEvent.Logout ->
+                logout()
+        }
+    }
+
+    private suspend fun checkLogin() {
+        _uiState.update { it.copy(isLoggedIn = authManager.isLoggedIn()) }
+    }
+
+    private fun retrieveUserInfo() {
+        viewModelScope.launch {
+            val userInfo = authManager.getUserInfo()!!
+            _uiState.update { it.copy(email = userInfo.email.toString()) }
         }
     }
 
@@ -58,6 +79,17 @@ class HomeViewModel @Inject constructor(
                     _products.update { result.products }
                 }
             }
+        }
+    }
+
+    private fun logout() {
+        _uiState.update { it.copy(isAuthLoading = true) }
+        viewModelScope.launch {
+            val result = authManager.logout()
+            if(result == AuthResponse.Success)
+                _uiState.update { it.copy(isLoggedIn = false, email = "") }
+        }.invokeOnCompletion {
+            _uiState.update { it.copy(isAuthLoading = false) }
         }
     }
 
