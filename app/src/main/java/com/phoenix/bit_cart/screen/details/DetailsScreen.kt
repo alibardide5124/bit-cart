@@ -42,7 +42,8 @@ import com.phoenix.bit_cart.ui.theme.BitCartTheme
 @Composable
 fun DetailsScreen(
     product: Product?,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onClickImage: () -> Unit
 ) {
     // TODO: ADD TO CART
     // TODO: CATEGORY ITEMS LIST
@@ -108,7 +109,9 @@ fun DetailsScreen(
                                 model = it,
                                 contentDescription = null,
                                 contentScale = ContentScale.FillWidth,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onClickImage() }
                             )
                         }
                         Box(
@@ -190,6 +193,7 @@ private fun DetailsPreview() {
                 categoryName = "Motherboards",
                 createdAt = "Sometime"
             ),
+            {},
             {}
         )
     }

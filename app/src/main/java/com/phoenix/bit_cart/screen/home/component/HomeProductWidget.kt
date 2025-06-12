@@ -49,7 +49,7 @@ fun HomeProductWidget(
         AsyncImage(
             model = product.imageUrl?.get(0),
             contentDescription = "Product image",
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth(.25f)
                 .aspectRatio(1 / 1f)
