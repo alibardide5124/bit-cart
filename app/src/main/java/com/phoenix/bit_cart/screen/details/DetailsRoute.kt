@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +31,10 @@ fun DetailsRoute(
 ) {
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        detailsViewModel.init(product.id)
+    }
+
     BackHandler(uiState.scaleImage) {
         detailsViewModel.onEvent(DetailsUiEvent.OnCloseImage)
     }
@@ -37,7 +42,12 @@ fun DetailsRoute(
     DetailsScreen(
         product = product,
         onClickBack = { navigateBack() },
-        onClickImage = { detailsViewModel.onEvent(DetailsUiEvent.OnClickImage) }
+        onClickImage = { detailsViewModel.onEvent(DetailsUiEvent.OnClickImage) },
+        quantity = uiState.quantity,
+        isCartLoading = uiState.isCartLoading,
+        errorCart = uiState.errorCart,
+        addToCart = { detailsViewModel.onEvent(DetailsUiEvent.AddToCart) },
+        removeFromCart = { detailsViewModel.onEvent(DetailsUiEvent.RemoveFromCart) },
     )
     AnimatedVisibility(uiState.scaleImage, enter = fadeIn(), exit = fadeOut()) {
         Box(

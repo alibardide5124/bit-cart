@@ -43,11 +43,13 @@ import com.phoenix.bit_cart.ui.theme.BitCartTheme
 fun DetailsScreen(
     product: Product?,
     onClickBack: () -> Unit,
-    onClickImage: () -> Unit
+    onClickImage: () -> Unit,
+    quantity: Int,
+    isCartLoading: Boolean,
+    errorCart: Boolean,
+    addToCart: () -> Unit,
+    removeFromCart: () -> Unit
 ) {
-    // TODO: ADD TO CART
-    // TODO: CATEGORY ITEMS LIST
-    // TODO: CART ITEM COUNT
     Scaffold(
         bottomBar = {
             AnimatedVisibility(product != null) {
@@ -79,12 +81,42 @@ fun DetailsScreen(
                         }
                     }
                     Spacer(Modifier.width(8.dp))
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(8.dp),
-                        enabled = product!!.available
-                    ) {
-                        Text("Add to cart")
+                    Box(contentAlignment = Alignment.Center) {
+                        if (quantity != 0) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Button(
+                                    onClick = { removeFromCart() },
+                                    shape = RoundedCornerShape(8.dp),
+                                    enabled = product!!.available
+                                ) {
+                                    Text("-")
+                                }
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = quantity.toString(),
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Button(
+                                    onClick = { addToCart() },
+                                    shape = RoundedCornerShape(8.dp),
+                                    enabled = product.available
+                                ) {
+                                    Text("+")
+                                }
+                            }
+                        } else {
+                            Button(
+                                onClick = { addToCart() },
+                                shape = RoundedCornerShape(8.dp),
+                                enabled = product!!.available
+                            ) {
+                                Text("Add to cart")
+                            }
+                        }
+                        if (isCartLoading) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }
@@ -180,7 +212,7 @@ fun DetailsScreen(
 private fun DetailsPreview() {
     BitCartTheme {
         DetailsScreen(
-            Product(
+            product = Product(
                 id = "1234",
                 name = "Gigabyte B550 WiFi",
                 description = "This is a shitboard made by shitty company",
@@ -193,8 +225,13 @@ private fun DetailsPreview() {
                 categoryName = "Motherboards",
                 createdAt = "Sometime"
             ),
-            {},
-            {}
+            onClickBack = {},
+            onClickImage = {},
+            quantity = 2,
+            isCartLoading = false,
+            errorCart = false,
+            addToCart = {},
+            removeFromCart = {},
         )
     }
 }

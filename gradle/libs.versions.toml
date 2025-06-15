@@ -19,6 +19,7 @@ supabaseBom = "3.1.4"
 ktor = "3.1.3"
 credentials = "1.5.0"
 coil = "3.2.0"
+gson = "2.13.1"
 
 googleid = "1.1.1"
 
@@ -52,6 +53,7 @@ androidx-credintials-play = { module = "androidx.credentials:credentials-play-se
 google-id = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

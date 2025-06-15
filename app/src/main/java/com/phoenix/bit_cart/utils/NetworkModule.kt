@@ -1,6 +1,7 @@
 package com.phoenix.bit_cart.utils
 
 import com.phoenix.bit_cart.data.AuthManager
+import com.phoenix.bit_cart.data.CartManager
 import com.phoenix.bit_cart.data.ProductManager
 import dagger.Module
 import dagger.Provides
@@ -39,5 +40,10 @@ object NetworkModule {
     @Singleton
     fun provideProductManager(supabase: SupabaseClient) =
         ProductManager(supabase)
+
+    @Provides
+    @Singleton
+    fun provideCartManager(supabase: SupabaseClient) =
+        CartManager(supabase)
 
 }
