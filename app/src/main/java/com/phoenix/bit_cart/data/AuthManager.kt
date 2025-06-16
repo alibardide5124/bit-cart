@@ -16,11 +16,6 @@ import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.util.UUID
 
-sealed interface AuthResponse {
-    data object Success: AuthResponse
-    data class Error(val message: String?): AuthResponse
-}
-
 class AuthManager(
     val supabase: SupabaseClient
 ) {

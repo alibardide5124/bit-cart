@@ -6,22 +6,6 @@ import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-sealed interface CartResponse {
-    data class Success(val products: List<CartItem>): CartResponse
-    data class Error(val message: String?): CartResponse
-}
-
-sealed interface IntResponse {
-    data class Success(val result: Int): IntResponse
-    data class Error(val message: String?): IntResponse
-}
-
-sealed interface Response {
-    data object Success: Response
-    data class Error(val message: String?): Response
-}
-
-
 class CartManager(
     val supabase: SupabaseClient
 ){
@@ -30,11 +14,54 @@ class CartManager(
         try {
             val response = supabase.postgrest
                 .rpc(function = "get_user_cart_count")
-                .decodeSingle<Int>()
+                .decodeAs<Int>()
             return IntResponse.Success(response)
         } catch (e: Exception) {
             e.printStackTrace()
             return IntResponse.Error(e.message)
+        }
+    }
+
+    suspend fun getUserCart(): CartResponse {
+        try {
+            val response = supabase.postgrest
+                .rpc(function = "get_user_cart")
+                .decodeList<CartItem>()
+            return CartResponse.Success(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return CartResponse.Error(e.message)
+        }
+    }
+
+    suspend fun placeOrder(name: String, address: String): Response {
+        try {
+            supabase.postgrest
+                .rpc(
+                    function = "place_order",
+                    parameters = buildJsonObject {
+                        put("p_name", JsonPrimitive(name))
+                        put("p_address", JsonPrimitive(address))
+                    }
+                )
+            return Response.Success
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Response.Error(e.message)
+        }
+    }
+
+    suspend fun deleteProductFromCart(productId: String): Response {
+        try {
+            supabase.postgrest
+                .rpc(
+                    function = "delete_product_from_cart",
+                    parameters = buildJsonObject { put("p_product_id", JsonPrimitive(productId)) }
+                )
+            return Response.Success
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Response.Error(e.message)
         }
     }
 

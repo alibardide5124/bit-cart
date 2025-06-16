@@ -100,7 +100,7 @@ fun DetailsScreen(
                                 Button(
                                     onClick = { addToCart() },
                                     shape = RoundedCornerShape(8.dp),
-                                    enabled = product.available
+                                    enabled = product.available && product.stock > quantity
                                 ) {
                                     Text("+")
                                 }
@@ -109,7 +109,7 @@ fun DetailsScreen(
                             Button(
                                 onClick = { addToCart() },
                                 shape = RoundedCornerShape(8.dp),
-                                enabled = product!!.available
+                                enabled = product!!.available && !isCartLoading
                             ) {
                                 Text("Add to cart")
                             }

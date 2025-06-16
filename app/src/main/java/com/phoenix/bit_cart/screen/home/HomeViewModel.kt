@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.phoenix.bit_cart.data.AuthManager
 import com.phoenix.bit_cart.data.AuthResponse
+import com.phoenix.bit_cart.data.CartManager
+import com.phoenix.bit_cart.data.IntResponse
 import com.phoenix.bit_cart.data.ProductManager
 import com.phoenix.bit_cart.data.ProductResponse
 import com.phoenix.bit_cart.data.model.Product
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val productManager: ProductManager,
-    val authManager: AuthManager
+    val authManager: AuthManager,
+    val cartManager: CartManager
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -29,8 +32,10 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             checkLogin()
-            if (uiState.value.isLoggedIn)
+            if (uiState.value.isLoggedIn) {
                 retrieveUserInfo()
+                loadCart()
+            }
         }
         getAllProducts()
     }
@@ -51,6 +56,9 @@ class HomeViewModel @Inject constructor(
 
             HomeUiEvent.Logout ->
                 logout()
+
+            HomeUiEvent.RefreshCart ->
+                loadCart()
         }
     }
 
@@ -62,6 +70,15 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val userInfo = authManager.getUserInfo()!!
             _uiState.update { it.copy(email = userInfo.email.toString()) }
+        }
+    }
+
+    private fun loadCart() {
+        viewModelScope.launch {
+            val result = cartManager.getUserCartCount()
+            if (result is IntResponse.Success) {
+                _uiState.update { it.copy(cartCount = result.result) }
+            }
         }
     }
 

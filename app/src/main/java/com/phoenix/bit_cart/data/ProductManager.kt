@@ -4,11 +4,6 @@ import com.phoenix.bit_cart.data.model.Product
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 
-sealed interface ProductResponse {
-    data class Success(val products: List<Product>): ProductResponse
-    data class Error(val message: String?): ProductResponse
-}
-
 class ProductManager(
     val supabase: SupabaseClient
 ){

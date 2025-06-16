@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import androidx.savedstate.SavedState
 import com.phoenix.bit_cart.data.model.Product
 import com.phoenix.bit_cart.screen.about.AboutScreen
+import com.phoenix.bit_cart.screen.cart.CartRoute
 import com.phoenix.bit_cart.screen.details.DetailsRoute
 import com.phoenix.bit_cart.screen.home.HomeRoute
 import com.phoenix.bit_cart.screen.login.LoginRoute
@@ -31,7 +32,7 @@ fun AppNavigation() {
         composable<NavDestination.Home> {
             HomeRoute(
                 navigateToAbout = { navController.navigate(NavDestination.About) },
-                navigateToCart = {   },
+                navigateToCart = { navController.navigate(NavDestination.Cart)  },
                 navigateToLogin = { navController.navigate(NavDestination.Login)},
                 navigateToDetails = { navController.navigate(NavDestination.Details(it)) }
             )
@@ -60,6 +61,11 @@ fun AppNavigation() {
                 navigateBack = { navController.popBackStack() }
             )
         }
+        composable<NavDestination.Cart> {
+            CartRoute(
+                navigateToHome = { navController.popBackStack() }
+            )
+        }
     }
 }
 
@@ -72,6 +78,8 @@ sealed interface NavDestination {
     data class Details(val product: Product): NavDestination
     @Serializable
     data object About: NavDestination
+    @Serializable
+    data object Cart: NavDestination
 }
 
 object CustomNavType {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
@@ -31,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phoenix.bit_cart.data.model.Product
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ fun HomeRoute(
     navigateToLogin: () -> Unit,
     navigateToDetails: (Product) -> Unit,
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val products by homeViewModel.products.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -50,6 +54,13 @@ fun HomeRoute(
 
     BackHandler(uiState.isSearching) {
         homeViewModel.onEvent(HomeUiEvent.CloseSearch)
+    }
+
+    LifecycleResumeEffect(lifecycleOwner, Unit) {
+        homeViewModel.onEvent(HomeUiEvent.RefreshCart)
+        onPauseOrDispose {
+
+        }
     }
 
     ModalNavigationDrawer(
@@ -108,6 +119,13 @@ fun HomeRoute(
                     },
                     icon = {
                         Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = null)
+                    },
+                    badge = {
+                        if (uiState.cartCount > 0) {
+                            Badge() {
+                                Text(uiState.cartCount.toString())
+                            }
+                        }
                     }
                 )
                 NavigationDrawerItem(

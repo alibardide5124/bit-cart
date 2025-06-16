@@ -6,7 +6,8 @@ data class HomeUiState(
     val isAuthLoading: Boolean = false,
     val email: String = "",
     val isSearching: Boolean = false,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val cartCount: Int = 0
 )
 
 enum class LoadingStatus {
