@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
@@ -43,6 +44,7 @@ fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navigateToAbout: () -> Unit,
     navigateToCart: () -> Unit,
+    navigateToOrder: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToDetails: (Product) -> Unit,
 ) {
@@ -124,6 +126,26 @@ fun HomeRoute(
                         if (uiState.cartCount > 0) {
                             Badge() {
                                 Text(uiState.cartCount.toString())
+                            }
+                        }
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Orders") },
+                    selected = false,
+                    onClick = {
+                        if (uiState.isLoggedIn)
+                            navigateToOrder()
+                        else
+                            navigateToLogin()
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Outlined.AccountBox, contentDescription = null)
+                    },
+                    badge = {
+                        if (uiState.orderCount > 0) {
+                            Badge() {
+                                Text(uiState.orderCount.toString())
                             }
                         }
                     }

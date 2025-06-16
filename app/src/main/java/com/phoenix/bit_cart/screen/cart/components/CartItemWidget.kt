@@ -1,5 +1,6 @@
 package com.phoenix.bit_cart.screen.cart.components
 
+import android.icu.text.DecimalFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -38,6 +40,8 @@ fun CartItemWidget(
     cartItem: CartItem,
     onClickRemove: (String) -> Unit
 ) {
+    val df = remember { DecimalFormat("#.##") }
+
     Box(
         modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
@@ -70,11 +74,12 @@ fun CartItemWidget(
                         text = cartItem.productName,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
                     )
                     Spacer(Modifier.width(16.dp))
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Back to home",
+                        contentDescription = "Delete item",
                         tint = MaterialTheme.colorScheme.background,
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
@@ -100,7 +105,7 @@ fun CartItemWidget(
                     )
                     Spacer(Modifier.width(16.dp))
                     Text(
-                        text = "${(cartItem.price * cartItem.quantity).toString().format("%.2f")}$",
+                        text = "${(df.format(cartItem.price * cartItem.quantity))}$",
                         fontSize = 14.sp
                     )
                 }

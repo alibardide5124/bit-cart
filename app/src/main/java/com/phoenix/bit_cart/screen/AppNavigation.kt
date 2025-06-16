@@ -16,6 +16,7 @@ import com.phoenix.bit_cart.screen.cart.CartRoute
 import com.phoenix.bit_cart.screen.details.DetailsRoute
 import com.phoenix.bit_cart.screen.home.HomeRoute
 import com.phoenix.bit_cart.screen.login.LoginRoute
+import com.phoenix.bit_cart.screen.order.OrderRoute
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
@@ -33,6 +34,7 @@ fun AppNavigation() {
             HomeRoute(
                 navigateToAbout = { navController.navigate(NavDestination.About) },
                 navigateToCart = { navController.navigate(NavDestination.Cart)  },
+                navigateToOrder = { navController.navigate(NavDestination.Orders)},
                 navigateToLogin = { navController.navigate(NavDestination.Login)},
                 navigateToDetails = { navController.navigate(NavDestination.Details(it)) }
             )
@@ -66,6 +68,11 @@ fun AppNavigation() {
                 navigateToHome = { navController.popBackStack() }
             )
         }
+        composable<NavDestination.Orders> {
+            OrderRoute(
+                navigateToHome = { navController.popBackStack() }
+            )
+        }
     }
 }
 
@@ -80,6 +87,8 @@ sealed interface NavDestination {
     data object About: NavDestination
     @Serializable
     data object Cart: NavDestination
+    @Serializable
+    data object Orders: NavDestination
 }
 
 object CustomNavType {

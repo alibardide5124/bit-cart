@@ -7,7 +7,8 @@ data class HomeUiState(
     val email: String = "",
     val isSearching: Boolean = false,
     val searchQuery: String = "",
-    val cartCount: Int = 0
+    val cartCount: Int = 0,
+    val orderCount: Int = 0
 )
 
 enum class LoadingStatus {

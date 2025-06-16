@@ -55,7 +55,7 @@ class CartViewModel @Inject constructor(
         viewModelScope.launch {
             val result = cartManager.getUserCart()
             if (result is CartResponse.Success)
-                _cartItems.update { result.products }
+                _cartItems.update { result.items }
             else
                 _uiState.update { it.copy(isError = true) }
         }.invokeOnCompletion {

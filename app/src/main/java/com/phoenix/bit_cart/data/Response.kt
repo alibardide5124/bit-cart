@@ -10,7 +10,7 @@ sealed interface AuthResponse {
 }
 
 sealed interface CartResponse {
-    data class Success(val products: List<CartItem>): CartResponse
+    data class Success(val items: List<CartItem>): CartResponse
     data class Error(val message: String?): CartResponse
 }
 
@@ -25,7 +25,7 @@ sealed interface Response {
 }
 
 sealed interface OrderResponse {
-    data class Success(val products: List<OrderDetails>?): OrderResponse
+    data class Success(val orders: List<OrderDetails>): OrderResponse
     data class Error(val message: String?): OrderResponse
 }
 

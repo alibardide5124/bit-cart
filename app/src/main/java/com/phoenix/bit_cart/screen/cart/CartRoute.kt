@@ -1,11 +1,13 @@
 package com.phoenix.bit_cart.screen.cart
 
+import android.icu.text.DecimalFormat
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +18,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,6 +38,7 @@ fun CartRoute(
     val uiState by cartViewModel.uiState.collectAsStateWithLifecycle()
     val cartItems by cartViewModel.cartItems.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState()
+    val df = remember { DecimalFormat("#.##") }
 
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
@@ -67,7 +71,7 @@ fun CartRoute(
             },
             sheetState = sheetState
         ) {
-            Column(Modifier.fillMaxWidth()) {
+            Column(Modifier.fillMaxWidth().padding(16.dp)) {
                 OutlinedTextField(
                     value = uiState.name,
                     onValueChange = { cartViewModel.onEvent(CartUiEvent.OnNameChange(it)) },
@@ -94,7 +98,7 @@ fun CartRoute(
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Pay ${cartItems.sumOf { it.quantity * it.price.toDouble() }.toString().format("%.2f")} + Tax /w Shipping")
+                    Text("Pay ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })} + Tax /w Shipping")
                 }
             }
         }

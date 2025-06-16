@@ -7,6 +7,7 @@ import com.phoenix.bit_cart.data.AuthManager
 import com.phoenix.bit_cart.data.AuthResponse
 import com.phoenix.bit_cart.data.CartManager
 import com.phoenix.bit_cart.data.IntResponse
+import com.phoenix.bit_cart.data.OrderManager
 import com.phoenix.bit_cart.data.ProductManager
 import com.phoenix.bit_cart.data.ProductResponse
 import com.phoenix.bit_cart.data.model.Product
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     val productManager: ProductManager,
     val authManager: AuthManager,
-    val cartManager: CartManager
+    val cartManager: CartManager,
+    val orderManager: OrderManager
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -35,6 +37,7 @@ class HomeViewModel @Inject constructor(
             if (uiState.value.isLoggedIn) {
                 retrieveUserInfo()
                 loadCart()
+                loadOrders()
             }
         }
         getAllProducts()
@@ -57,8 +60,10 @@ class HomeViewModel @Inject constructor(
             HomeUiEvent.Logout ->
                 logout()
 
-            HomeUiEvent.RefreshCart ->
+            HomeUiEvent.RefreshCart -> {
                 loadCart()
+                loadOrders()
+            }
         }
     }
 
@@ -78,6 +83,15 @@ class HomeViewModel @Inject constructor(
             val result = cartManager.getUserCartCount()
             if (result is IntResponse.Success) {
                 _uiState.update { it.copy(cartCount = result.result) }
+            }
+        }
+    }
+
+    private fun loadOrders() {
+        viewModelScope.launch {
+            val result = orderManager.getUserOpenOrdersCount()
+            if (result is IntResponse.Success) {
+                _uiState.update { it.copy(orderCount = result.result) }
             }
         }
     }

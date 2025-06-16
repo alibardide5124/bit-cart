@@ -1,6 +1,5 @@
-package com.phoenix.bit_cart.screen.cart
+package com.phoenix.bit_cart.screen.order
 
-import android.icu.text.DecimalFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,27 +23,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.phoenix.bit_cart.data.model.CartItem
-import com.phoenix.bit_cart.screen.cart.components.CartItemWidget
+import com.phoenix.bit_cart.data.model.OrderDetails
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen(
+fun OrderScreen(
     isLoading: Boolean,
     isError: Boolean,
+    orderDetails: List<OrderDetails>,
     onTryAgain: () -> Unit,
-    cartItems: List<CartItem>,
-    onClickBack: () -> Unit,
-    onClickPlaceOrder: () -> Unit,
-    onClickRemove: (productId: String) -> Unit
+    onCancel: (orderId: String) -> Unit,
+    onClickBack: () -> Unit
 ) {
-    val df = remember { DecimalFormat("#.##") }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -60,21 +55,6 @@ fun CartScreen(
                     )
                 }
             )
-        },
-        bottomBar = {
-            if (!isLoading && cartItems.isNotEmpty()) {
-                Column(Modifier.fillMaxWidth()) {
-                    Text("Total cost ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })}")
-                    Spacer(Modifier.height(16.dp))
-                    Button(
-                        onClick = { onClickPlaceOrder() },
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Place order")
-                    }
-                }
-            }
         }
     ) { innerPadding ->
         Box(
@@ -84,17 +64,17 @@ fun CartScreen(
         ) {
             AnimatedVisibility(!isLoading) {
                 LazyColumn(Modifier.fillMaxSize()){
-                    items(cartItems, key = { it.productId }) {
-                        CartItemWidget(
+                    items(orderDetails, key = { it.orderId }) {
+                        OrderDetailWidget(
                             modifier = Modifier.fillMaxWidth(),
-                            cartItem = it,
-                            onClickRemove = { onClickRemove(it) }
+                            orderDetails = it,
+                            onClickCancel = { onCancel(it.orderId) }
                         )
                     }
                 }
             }
-            AnimatedVisibility(!isLoading && cartItems.isEmpty() && !isError, modifier = Modifier.align(Alignment.Center)) {
-                Text("No items added to cart. Browse products.")
+            AnimatedVisibility(!isLoading && orderDetails.isEmpty() && !isError, modifier = Modifier.align(Alignment.Center)) {
+                Text("No order available. Visit cart to place order.")
             }
             AnimatedVisibility(isLoading, modifier = Modifier.align(Alignment.Center)) {
                 CircularProgressIndicator()
@@ -106,7 +86,7 @@ fun CartScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Error while loading products :(",
+                        text = "Error while loading orders :(",
                         fontSize = 16.sp
                     )
                     Spacer(Modifier.height(8.dp))
