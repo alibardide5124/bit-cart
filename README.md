@@ -4,8 +4,9 @@
 Important note
 > This application requires a supabase server, which at this moment is indefinitly
  shutdown, as it was a final project for my university and I didn't intended to keep
- it running. Therefore no release build is available, and you have to build your
- own supabase server to run it.
+ it running. You can also use your own server, just remove supabase client and use
+ Retrofit and change network call functions. Therefore no release build is available,
+ and you have to build your own supabase or web server to run it.
 ```
 Bit-Cart is a shopping application with minimal features designed based on supabase server.
 
