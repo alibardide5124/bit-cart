@@ -17,7 +17,7 @@ It features base E-Commerce functionality, including:
 - Place and track orders
 
 ### Arcitecture diagram
-![Diagram]("./docs/bit-cart-diagram.png")
+![Diagram](./docs/bit-cart-diagram.png)
 
 ### Repo structure
 ```
