@@ -10,7 +10,7 @@ Important note
 ```
 Bit-Cart is a shopping application with minimal features designed based on supabase server.
 
-### Features
+## Features
 It features base E-Commerce functionality, including:
 - Browse catalog
 - Mange shopping cart
@@ -20,7 +20,7 @@ It features base E-Commerce functionality, including:
 ### Arcitecture diagram
 ![Diagram](./docs/bit-cart-diagram.png)
 
-### Repo structure
+## Repo structure
 ```
 .
 ├── app/src/main/
@@ -42,17 +42,17 @@ It features base E-Commerce functionality, including:
 └── README.md
 ```
 
-### Tech stack
+## Tech stack
 - **Kotlin** for programming android application
 - **Jetpack compose** to design declaritive android ui
 - **supabase** as a server
 - **postgresql** for database
 - **google credential manager** to manage user google accounts and request login
 
-### Support
+## Support
 You can give project a start and join [**stargazers**](https://github.com/alibardide5124/bit-cart/stargazers) for this repository
 <br/>
 And [**follow me**](https://github.com/alibardide5124?tab=followers) for my next creations
 
-### License
+## License
 Bit-Cart by [Ali Bardide](https://github.com/alibardide5124) is licensed under a [MIT License](https://mit-license.org/).
