@@ -1,6 +1,8 @@
 package com.phoenix.bit_cart.screen.home
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,7 +27,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,44 +58,101 @@ fun HomeScreen(
     onClickSearch: () -> Unit,
     onClickProduct: (Product) -> Unit,
     onClickCloseSearch: () -> Unit,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    sortProperties: SortProperties,
+    onClickSort: () -> Unit,
 ) {
     Scaffold(
         topBar = {
-            Crossfade(isSearching) { target ->
-                if (target) {
-                    HomeScreenSearch(
-                        searchQuery,
-                        onClickCloseSearch,
-                        onSearchQueryChange
-                    )
-                } else {
-                    CenterAlignedTopAppBar(
-                        title = { Text(stringResource(id = R.string.app_name)) },
-                        navigationIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "Drawer",
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable { onClickDrawerMenu() }
-                                    .padding(8.dp)
-                            )
-                        },
-                        actions = {
-                            Icon(
-                                imageVector = Icons.Outlined.Search,
-                                contentDescription = "Search",
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable { onClickSearch() }
-                                    .padding(8.dp)
-                            )
-                        }
-                    )
+            Column(Modifier.fillMaxWidth()) {
+                Crossfade(isSearching) { target ->
+                    if (target) {
+                        HomeScreenSearch(
+                            searchQuery,
+                            onClickCloseSearch,
+                            onSearchQueryChange
+                        )
+                    } else {
+                        CenterAlignedTopAppBar(
+                            title = { Text(stringResource(id = R.string.app_name)) },
+                            navigationIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Menu,
+                                    contentDescription = "Drawer",
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .clickable { onClickDrawerMenu() }
+                                        .padding(8.dp)
+                                )
+                            },
+                            actions = {
+                                Row(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .clickable { onClickSearch() }
+                                        .padding(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Text(
+                                        text = "Search"
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Icon(
+                                        imageVector = Icons.Outlined.Search,
+                                        contentDescription = "Search"
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { onClickSort() }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_category),
+                            contentDescription = "Categories",
+                            modifier = Modifier.padding(4.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(text = "Categories")
+                    }
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { onClickSort() }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Sort by ${sortProperties.value.name}"
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            painter = when (sortProperties.type) {
+                                SortType.ASCENDING -> painterResource(R.drawable.ic_sort_accending)
+                                SortType.DESCENDING -> painterResource(R.drawable.ic_sort_decending)
+                            },
+                            contentDescription = "Sort By"
+                        )
+                    }
                 }
             }
-
         }
     ) { innerPadding ->
         LazyColumn(
@@ -132,10 +194,27 @@ fun HomeScreen(
 
                     items(
                         items =
-                            if (searchQuery.isBlank()) products
-                            else products.filter {
-                                "${it.name} ${it.description} ${it.categoryName}"
-                                    .contains(searchQuery.lowercase())
+                            products.let { p ->
+                                when (sortProperties.value) {
+                                    SortBy.NAME -> p.sortedBy { it.name.lowercase() }
+                                    SortBy.NEWEST -> p.sortedBy { it.createdAt }
+                                    SortBy.PRICE -> p.sortedBy { it.price }
+                                    SortBy.CATEGORY -> p.sortedBy { it.categoryName }
+                                }
+                            }.let { p ->
+                                when (sortProperties.type) {
+                                    SortType.ASCENDING -> p
+                                    SortType.DESCENDING -> p.reversed()
+                                }
+                            }.let { p ->
+                                when (searchQuery.isNotBlank()) {
+                                    true -> p.filter {
+                                        "${it.name} ${it.description} ${it.categoryName}"
+                                            .contains(searchQuery.lowercase())
+                                    }
+
+                                    false -> p
+                                }
                             },
                         key = { it.id }
                     ) {

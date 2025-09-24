@@ -64,6 +64,11 @@ class HomeViewModel @Inject constructor(
                 loadCart()
                 loadOrders()
             }
+
+            is HomeUiEvent.OnSort -> {
+                _uiState.update { it.copy(sortProperties = event.sortProperties) }
+                getAllProducts()
+            }
         }
     }
 

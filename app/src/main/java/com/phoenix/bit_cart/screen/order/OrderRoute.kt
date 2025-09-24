@@ -1,5 +1,6 @@
 package com.phoenix.bit_cart.screen.order
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,10 @@ fun OrderRoute(
     val orders by orderViewModel.orders.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState()
     var orderId by remember { mutableStateOf("") }
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.hide() }
+    }
 
     OrderScreen(
         isLoading = uiState.isLoading,

@@ -2,6 +2,9 @@ package com.phoenix.bit_cart.screen.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,18 +20,26 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phoenix.bit_cart.data.model.Product
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
@@ -52,10 +64,15 @@ fun HomeRoute(
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val products by homeViewModel.products.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     BackHandler(uiState.isSearching) {
         homeViewModel.onEvent(HomeUiEvent.CloseSearch)
+    }
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.hide() }
     }
 
     LifecycleResumeEffect(lifecycleOwner, Unit) {
@@ -172,7 +189,75 @@ fun HomeRoute(
             onClickSearch = { homeViewModel.onEvent(HomeUiEvent.StartSearch) },
             onClickProduct = { navigateToDetails(it) },
             onClickCloseSearch = { homeViewModel.onEvent(HomeUiEvent.CloseSearch) },
-            onSearchQueryChange = { homeViewModel.onEvent(HomeUiEvent.OnSearchQueryChanged(it))}
+            onSearchQueryChange = { homeViewModel.onEvent(HomeUiEvent.OnSearchQueryChanged(it))},
+            sortProperties = uiState.sortProperties,
+            onClickSort = { coroutineScope.launch { sheetState.show() }}
         )
     }
+
+    if (sheetState.isVisible)
+        ModalBottomSheet(
+            onDismissRequest = {
+                coroutineScope.launch { sheetState.hide() }
+            },
+            sheetState = sheetState
+        ) {
+            var sortProperties by remember { mutableStateOf(uiState.sortProperties) }
+
+            Column(Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 16.dp)) {
+                SortBy.entries.forEach {
+                    SortItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        name = it.value,
+                        isSelected = sortProperties.value == it,
+                        onSelect = { sortProperties = sortProperties.copy(value = it) }
+                    )
+                }
+                HorizontalDivider(Modifier.padding(vertical = 12.dp))
+                SortType.entries.forEach {
+                    SortItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        name = it.type,
+                        isSelected = sortProperties.type == it,
+                        onSelect = { sortProperties = sortProperties.copy(type = it) }
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        homeViewModel.onEvent(HomeUiEvent.OnSort(sortProperties))
+                        coroutineScope.launch { sheetState.hide() }
+                              },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                       text = "Apply",
+                        fontSize = 18.sp
+                    )
+
+                }
+            }
+
+        }
+}
+
+@Composable
+private fun SortItem(modifier: Modifier = Modifier, name: String, isSelected: Boolean, onSelect: () -> Unit) {
+    Text(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .then(
+                if (isSelected)
+                    Modifier.border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        shape = RoundedCornerShape(8.dp)
+                    ) else Modifier
+            )
+            .clickable { onSelect() }
+            .padding(vertical = 12.dp, horizontal = 16.dp),
+        text = name,
+        fontSize = 18.sp,
+    )
 }
