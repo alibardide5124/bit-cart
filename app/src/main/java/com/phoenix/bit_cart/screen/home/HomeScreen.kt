@@ -59,6 +59,8 @@ fun HomeScreen(
     onClickProduct: (Product) -> Unit,
     onClickCloseSearch: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
+    filteredCategory: String,
+    onClickCategories: () -> Unit,
     sortProperties: SortProperties,
     onClickSort: () -> Unit,
 ) {
@@ -120,7 +122,7 @@ fun HomeScreen(
                     Row(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .clickable { onClickSort() }
+                            .clickable { onClickCategories() }
                             .padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -205,6 +207,11 @@ fun HomeScreen(
                                 when (sortProperties.type) {
                                     SortType.ASCENDING -> p
                                     SortType.DESCENDING -> p.reversed()
+                                }
+                            }.let { p ->
+                                when (filteredCategory.isNotBlank()) {
+                                    true -> p.filter { it.categoryName == filteredCategory }
+                                    false -> p
                                 }
                             }.let { p ->
                                 when (searchQuery.isNotBlank()) {

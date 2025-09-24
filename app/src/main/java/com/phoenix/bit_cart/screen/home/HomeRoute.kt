@@ -48,6 +48,8 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.phoenix.bit_cart.data.model.Product
+import com.phoenix.bit_cart.screen.home.component.CategoriesBottomSheet
+import com.phoenix.bit_cart.screen.home.component.SortBottomSheet
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,12 +69,22 @@ fun HomeRoute(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    fun openDialog(dialogType: HomeDialogType) {
+        homeViewModel.onEvent(HomeUiEvent.OpenDialog(dialogType))
+        coroutineScope.launch { sheetState.show() }
+    }
+
+    fun closeDialog() {
+        coroutineScope.launch { sheetState.hide() }
+        homeViewModel.onEvent(HomeUiEvent.CloseDialog)
+    }
+
     BackHandler(uiState.isSearching) {
         homeViewModel.onEvent(HomeUiEvent.CloseSearch)
     }
 
     BackHandler(sheetState.isVisible) {
-        coroutineScope.launch { sheetState.hide() }
+        closeDialog()
     }
 
     LifecycleResumeEffect(lifecycleOwner, Unit) {
@@ -103,7 +115,9 @@ fun HomeRoute(
                     OutlinedButton(
                         onClick = { homeViewModel.onEvent(HomeUiEvent.Logout) },
                         shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.padding(horizontal = 16.dp).width(144.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .width(144.dp)
                     ) {
                         AnimatedVisibility(uiState.isAuthLoading) {
                             CircularProgressIndicator(
@@ -119,7 +133,9 @@ fun HomeRoute(
                     Button(
                         onClick = navigateToLogin,
                         shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.padding(horizontal = 16.dp).width(144.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .width(144.dp)
                     ) {
                         Text("Login")
                     }
@@ -161,9 +177,7 @@ fun HomeRoute(
                     },
                     badge = {
                         if (uiState.orderCount > 0) {
-                            Badge() {
-                                Text(uiState.orderCount.toString())
-                            }
+                            Badge { Text(uiState.orderCount.toString()) }
                         }
                     }
                 )
@@ -189,75 +203,48 @@ fun HomeRoute(
             onClickSearch = { homeViewModel.onEvent(HomeUiEvent.StartSearch) },
             onClickProduct = { navigateToDetails(it) },
             onClickCloseSearch = { homeViewModel.onEvent(HomeUiEvent.CloseSearch) },
-            onSearchQueryChange = { homeViewModel.onEvent(HomeUiEvent.OnSearchQueryChanged(it))},
+            onSearchQueryChange = { homeViewModel.onEvent(HomeUiEvent.OnSearchQueryChanged(it)) },
+            filteredCategory = uiState.category,
+            onClickCategories = { openDialog(HomeDialogType.Category) },
             sortProperties = uiState.sortProperties,
-            onClickSort = { coroutineScope.launch { sheetState.show() }}
+            onClickSort = { openDialog(HomeDialogType.Sort) }
         )
     }
 
-    if (sheetState.isVisible)
-        ModalBottomSheet(
-            onDismissRequest = {
-                coroutineScope.launch { sheetState.hide() }
-            },
-            sheetState = sheetState
-        ) {
-            var sortProperties by remember { mutableStateOf(uiState.sortProperties) }
+    when (uiState.dialogType) {
+        HomeDialogType.None -> Unit
 
-            Column(Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 16.dp)) {
-                SortBy.entries.forEach {
-                    SortItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        name = it.value,
-                        isSelected = sortProperties.value == it,
-                        onSelect = { sortProperties = sortProperties.copy(value = it) }
-                    )
-                }
-                HorizontalDivider(Modifier.padding(vertical = 12.dp))
-                SortType.entries.forEach {
-                    SortItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        name = it.type,
-                        isSelected = sortProperties.type == it,
-                        onSelect = { sortProperties = sortProperties.copy(type = it) }
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        homeViewModel.onEvent(HomeUiEvent.OnSort(sortProperties))
-                        coroutineScope.launch { sheetState.hide() }
-                              },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                       text = "Apply",
-                        fontSize = 18.sp
-                    )
-
-                }
+        is HomeDialogType.Sort ->
+            ModalBottomSheet(
+                onDismissRequest = {
+                    closeDialog()
+                },
+                sheetState = sheetState
+            ) {
+                SortBottomSheet(
+                    initialSortProperties = uiState.sortProperties,
+                    onClickApply = {
+                        homeViewModel.onEvent(HomeUiEvent.OnSort(it))
+                        closeDialog()
+                    }
+                )
             }
 
-        }
-}
-
-@Composable
-private fun SortItem(modifier: Modifier = Modifier, name: String, isSelected: Boolean, onSelect: () -> Unit) {
-    Text(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .then(
-                if (isSelected)
-                    Modifier.border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        shape = RoundedCornerShape(8.dp)
-                    ) else Modifier
-            )
-            .clickable { onSelect() }
-            .padding(vertical = 12.dp, horizontal = 16.dp),
-        text = name,
-        fontSize = 18.sp,
-    )
+        is HomeDialogType.Category ->
+            ModalBottomSheet(
+                onDismissRequest = {
+                    closeDialog()
+                },
+                sheetState = sheetState
+            ) {
+                CategoriesBottomSheet(
+                    initialCategory = uiState.category,
+                    categories = products.map { it.categoryName }.distinct(),
+                    onClickApply = {
+                        homeViewModel.onEvent(HomeUiEvent.OnChooseCategory(it))
+                        closeDialog()
+                    }
+                )
+            }
+    }
 }

@@ -9,12 +9,20 @@ data class HomeUiState(
     val searchQuery: String = "",
     val cartCount: Int = 0,
     val orderCount: Int = 0,
+    val dialogType: HomeDialogType = HomeDialogType.None,
+    val category: String = "",
     val sortProperties: SortProperties =
         SortProperties(value = SortBy.NEWEST, type = SortType.ASCENDING)
 )
 
 enum class LoadingStatus {
     LOADING, DONE, FAILED
+}
+
+sealed interface HomeDialogType {
+    data object None: HomeDialogType
+    data object Sort: HomeDialogType
+    data object Category: HomeDialogType
 }
 
 data class SortProperties(

@@ -65,10 +65,22 @@ class HomeViewModel @Inject constructor(
                 loadOrders()
             }
 
+            is HomeUiEvent.OnChooseCategory -> {
+                _uiState.update { it.copy(category = event.category) }
+                getAllProducts()
+            }
+
             is HomeUiEvent.OnSort -> {
                 _uiState.update { it.copy(sortProperties = event.sortProperties) }
                 getAllProducts()
             }
+
+            HomeUiEvent.CloseDialog ->
+                _uiState.update { it.copy(dialogType = HomeDialogType.None) }
+
+            is HomeUiEvent.OpenDialog ->
+                _uiState.update { it.copy(dialogType = event.dialogType) }
+
         }
     }
 
