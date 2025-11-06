@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
             if (result == AuthResponse.Success) {
                 _uiState.update { it.copy(isLoggedIn = true) }
             } else if (result is AuthResponse.Error && result.message!!.contains("Invalid login credentials")) {
-                Toast.makeText(context, "Email or Password is incorrect", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "ایمیل یا رمزعبور اشتباه است", Toast.LENGTH_SHORT).show()
             }
         }.invokeOnCompletion {
             _uiState.update { it.copy(isLoading = false) }

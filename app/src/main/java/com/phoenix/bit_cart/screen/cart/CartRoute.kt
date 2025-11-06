@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,8 +46,8 @@ fun CartRoute(
     }
 
     LaunchedEffect(uiState.orderPlaced) {
-        if (uiState.orderPlaced == true) {
-            Toast.makeText(context, "Order placed successfully", Toast.LENGTH_LONG).show()
+        if (uiState.orderPlaced) {
+            Toast.makeText(context, "سفارش با موفقیت ثبت شد", Toast.LENGTH_LONG).show()
             navigateToHome()
         }
     }
@@ -76,7 +77,7 @@ fun CartRoute(
                     value = uiState.name,
                     onValueChange = { cartViewModel.onEvent(CartUiEvent.OnNameChange(it)) },
                     placeholder = {
-                        Text("Name")
+                        Text("نام گیرنده")
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -85,9 +86,11 @@ fun CartRoute(
                     value = uiState.address,
                     onValueChange = { cartViewModel.onEvent(CartUiEvent.OnAddressChange(it)) },
                     placeholder = {
-                        Text("Address")
+                        Text("آدرس ارسال")
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .requiredHeight(120.dp)
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -96,9 +99,10 @@ fun CartRoute(
                         coroutineScope.launch { sheetState.hide() }
                               },
                     shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = uiState.name.isNotBlank() && uiState.address.isNotBlank()
                 ) {
-                    Text("Pay ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })} + Tax /w Shipping")
+                    Text("پرداخت ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })} + مالیت و ارسال")
                 }
             }
         }

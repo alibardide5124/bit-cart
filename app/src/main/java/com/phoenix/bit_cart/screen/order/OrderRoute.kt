@@ -65,7 +65,7 @@ fun OrderRoute(
             sheetState = sheetState
         ) {
             Column(Modifier.fillMaxWidth().padding(16.dp)) {
-                Text("Are you sure to cancel this order")
+                Text("آیا مطمئن هستید که میخواهید سفارش را لغو کنید؟")
                 Spacer(Modifier.height(16.dp))
                 Row(Modifier.fillMaxWidth()) {
                     Button(
@@ -76,7 +76,7 @@ fun OrderRoute(
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Yes, cancel")
+                        Text("بله، لغو شود")
                     }
                     Spacer(Modifier.width(12.dp))
                     OutlinedButton(
@@ -86,7 +86,7 @@ fun OrderRoute(
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("No, abort")
+                        Text("خیر")
                     }
                 }
             }

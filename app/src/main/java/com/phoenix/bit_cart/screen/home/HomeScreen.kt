@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.phoenix.bit_cart.R
 import com.phoenix.bit_cart.data.model.Product
 import com.phoenix.bit_cart.screen.home.component.HomeProductWidget
+import com.phoenix.bit_cart.utils.Constants.farsi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,9 +101,8 @@ fun HomeScreen(
                                         .padding(8.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-
                                     Text(
-                                        text = "Search"
+                                        text = "جستجو"
                                     )
                                     Spacer(Modifier.width(8.dp))
                                     Icon(
@@ -132,7 +132,7 @@ fun HomeScreen(
                             modifier = Modifier.padding(4.dp)
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text(text = "Categories")
+                        Text(text = "دسته بندی")
                     }
                     Row(
                         modifier = Modifier
@@ -142,7 +142,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Sort by ${sortProperties.value.name}"
+                            text = sortProperties.value.farsi()
                         )
                         Spacer(Modifier.width(8.dp))
                         Icon(
@@ -173,7 +173,7 @@ fun HomeScreen(
                             LinearProgressIndicator()
                             Spacer(Modifier.height(8.dp))
                             Text(
-                                text = "Loading Products...",
+                                text = "بارگذاری محصولات",
                                 fontSize = 16.sp
                             )
                         }
@@ -187,7 +187,7 @@ fun HomeScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "No Products Found :(",
+                                    text = "هیچ محصولی یافت نشد",
                                     fontSize = 16.sp
                                 )
                             }
@@ -217,7 +217,7 @@ fun HomeScreen(
                                 when (searchQuery.isNotBlank()) {
                                     true -> p.filter {
                                         "${it.name} ${it.description} ${it.categoryName}"
-                                            .contains(searchQuery.lowercase())
+                                            .contains(searchQuery, ignoreCase = true)
                                     }
 
                                     false -> p
@@ -241,7 +241,7 @@ fun HomeScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Error while loading products :(",
+                                text = "خطا در حین بارگیری محصولات",
                                 fontSize = 16.sp
                             )
                             Spacer(Modifier.height(8.dp))
@@ -249,7 +249,7 @@ fun HomeScreen(
                                 onClick = { onTryAgain() },
                                 shape = RoundedCornerShape(8.dp)
                             ) {
-                                Text("Try Again")
+                                Text("تلاش مجدد")
                             }
                         }
                     }

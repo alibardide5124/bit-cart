@@ -48,7 +48,7 @@ fun CartScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Cart") },
+                title = { Text("سبد خرید") },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -61,21 +61,6 @@ fun CartScreen(
                 }
             )
         },
-        bottomBar = {
-            if (!isLoading && cartItems.isNotEmpty()) {
-                Column(Modifier.fillMaxWidth()) {
-                    Text("Total cost ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })}")
-                    Spacer(Modifier.height(16.dp))
-                    Button(
-                        onClick = { onClickPlaceOrder() },
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Place order")
-                    }
-                }
-            }
-        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -83,18 +68,35 @@ fun CartScreen(
                 .padding(innerPadding)
         ) {
             AnimatedVisibility(!isLoading) {
-                LazyColumn(Modifier.fillMaxSize()){
-                    items(cartItems, key = { it.productId }) {
-                        CartItemWidget(
-                            modifier = Modifier.fillMaxWidth(),
-                            cartItem = it,
-                            onClickRemove = { onClickRemove(it) }
-                        )
+                Column {
+                    LazyColumn(Modifier.fillMaxSize().weight(1f)){
+                        items(cartItems, key = { it.productId }) {
+                            CartItemWidget(
+                                modifier = Modifier.fillMaxWidth(),
+                                cartItem = it,
+                                onClickRemove = { onClickRemove(it) }
+                            )
+                        }
+                    }
+                    if(cartItems.isNotEmpty()) {
+                        Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
+                            Text("هزینه کلی ${df.format(cartItems.sumOf { it.quantity * it.price.toDouble() })}")
+                            Spacer(Modifier.height(8.dp))
+                            Button(
+                                onClick = { onClickPlaceOrder() },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("ثبت سفارش")
+                            }
+                        }
                     }
                 }
             }
             AnimatedVisibility(!isLoading && cartItems.isEmpty() && !isError, modifier = Modifier.align(Alignment.Center)) {
-                Text("No items added to cart. Browse products.")
+                Text("""
+                    هیچ محصولی به سبد خرید اضافه نشده.
+                """.trimIndent())
             }
             AnimatedVisibility(isLoading, modifier = Modifier.align(Alignment.Center)) {
                 CircularProgressIndicator()
@@ -106,7 +108,7 @@ fun CartScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Error while loading products :(",
+                        text = "خطا در حین بارگیری سبد خرید",
                         fontSize = 16.sp
                     )
                     Spacer(Modifier.height(8.dp))
@@ -114,7 +116,7 @@ fun CartScreen(
                         onClick = { onTryAgain() },
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Try Again")
+                        Text("تلاش مجدد")
                     }
                 }
             }

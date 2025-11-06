@@ -72,16 +72,24 @@ fun AboutScreen(
             Text(
                 text =
                     """
-                        Made by Ali Bardide, this is a MVP project demonstrating skills in both Android and Backend side. You can find me in these links
-                    """.trimIndent(),
+                    توسعه داده شده توسط علی بردیده. این پروژه یک دمو از پیاده سازی اپلیکیشن فروشگاهی، برای نمایش توانایی در توسعه اندروید و سمت بکند هست. میتونید من رو از لینک های زیر پیدا کنید.
+                """.trimIndent(),
                 fontSize = 18.sp
             )
             Spacer(Modifier.height(32.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 listOf(
                     SocialLinks("Website", "https://ali-bardide.vercel.app", R.drawable.ic_web),
-                    SocialLinks("GitHub", "https://GitHub.com/alibardide5124", R.drawable.ic_github),
-                    SocialLinks("Linkedin", "https://linkedin.com/in/alibardide", R.drawable.ic_linkedin)
+                    SocialLinks(
+                        "GitHub",
+                        "https://GitHub.com/alibardide5124",
+                        R.drawable.ic_github
+                    ),
+                    SocialLinks(
+                        "Linkedin",
+                        "https://linkedin.com/in/alibardide",
+                        R.drawable.ic_linkedin
+                    )
                 ).forEach {
                     Icon(
                         painter = painterResource(it.icon),

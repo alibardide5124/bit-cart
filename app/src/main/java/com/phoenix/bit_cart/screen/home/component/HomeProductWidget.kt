@@ -81,8 +81,9 @@ fun HomeProductWidget(
                 )
                 Spacer(Modifier.width(16.dp))
                 Text(
-                    text = if (product.stock > 0) "${product.price}$" else "Unavailable",
-                    fontSize = 14.sp
+                    text = if (product.stock > 0) "${product.price}$" else "ناموجود",
+                    fontSize = 14.sp,
+                    fontWeight = if (product.stock > 0) FontWeight.Bold else FontWeight.Normal
                 )
             }
         }

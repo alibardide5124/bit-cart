@@ -43,7 +43,7 @@ fun OrderScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Cart") },
+                title = { Text("سفارشات") },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -74,7 +74,10 @@ fun OrderScreen(
                 }
             }
             AnimatedVisibility(!isLoading && orderDetails.isEmpty() && !isError, modifier = Modifier.align(Alignment.Center)) {
-                Text("No order available. Visit cart to place order.")
+                Text("""
+                    هیچ سفارشی ثبت نشده.
+                    برای ثبت سفارش به سبد خرید بروید.
+                """.trimIndent())
             }
             AnimatedVisibility(isLoading, modifier = Modifier.align(Alignment.Center)) {
                 CircularProgressIndicator()
@@ -86,7 +89,7 @@ fun OrderScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Error while loading orders :(",
+                        text = "خطا حین بارگیری سفارشات",
                         fontSize = 16.sp
                     )
                     Spacer(Modifier.height(8.dp))
@@ -94,7 +97,7 @@ fun OrderScreen(
                         onClick = { onTryAgain() },
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("Try Again")
+                        Text("تلاش مجدد")
                     }
                 }
             }

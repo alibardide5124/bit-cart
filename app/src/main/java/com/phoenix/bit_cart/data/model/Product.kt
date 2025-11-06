@@ -7,13 +7,14 @@ import kotlinx.serialization.Serializable
 data class Product(
     val id: String,
     val name: String,
-    val description: String?,
+    val description: String,
     val sku: String,
     val price: Float,
     val stock: Int,
-    val available: Boolean,
     @SerialName("image_url")
     val imageUrl: List<String>?,
+    @SerialName("specifications")
+    val specifications: List<String>,
     @SerialName("category_id")
     val categoryId: String,
     @SerialName("category_name")

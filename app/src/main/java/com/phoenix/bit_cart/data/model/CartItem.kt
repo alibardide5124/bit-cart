@@ -15,7 +15,6 @@ data class CartItem(
     @SerialName("available_quantity")
     val availableQuantity: Int,
     val price: Float,
-    val available: Boolean,
     @SerialName("image_url")
     val imageUrl: List<String>?
 )

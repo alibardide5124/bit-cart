@@ -126,7 +126,7 @@ fun HomeRoute(
                             )
                         }
                         AnimatedVisibility(!uiState.isAuthLoading) {
-                            Text("Logout")
+                            Text("خروج از حساب")
                         }
                     }
                 } else {
@@ -137,14 +137,14 @@ fun HomeRoute(
                             .padding(horizontal = 16.dp)
                             .width(144.dp)
                     ) {
-                        Text("Login")
+                        Text("ورود به حساب")
                     }
                 }
                 Spacer(Modifier.height(16.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(16.dp))
                 NavigationDrawerItem(
-                    label = { Text("Cart") },
+                    label = { Text("سبد خرید") },
                     selected = false,
                     onClick = {
                         if (uiState.isLoggedIn)
@@ -164,7 +164,7 @@ fun HomeRoute(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Orders") },
+                    label = { Text("سفارشات") },
                     selected = false,
                     onClick = {
                         if (uiState.isLoggedIn)
@@ -182,7 +182,7 @@ fun HomeRoute(
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("About") },
+                    label = { Text("درباره") },
                     selected = false,
                     onClick = {
                         navigateToAbout()

@@ -31,7 +31,7 @@ fun CategoriesBottomSheet(
     Column(Modifier.fillMaxWidth().padding(16.dp)) {
         CategoryItem(
             modifier = Modifier.fillMaxWidth(),
-            name = "All Categories",
+            name = "تمام دسته بندی ها",
             isSelected = selectedCategory.isBlank(),
             onSelect = { selectedCategory = "" }
         )
@@ -50,7 +50,7 @@ fun CategoriesBottomSheet(
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Apply",
+                text = "اعمال",
                 fontSize = 18.sp
             )
 

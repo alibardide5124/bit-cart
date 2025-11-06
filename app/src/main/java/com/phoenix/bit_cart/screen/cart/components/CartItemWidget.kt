@@ -79,7 +79,7 @@ fun CartItemWidget(
                     Spacer(Modifier.width(16.dp))
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Delete item",
+                        contentDescription = "حذف",
                         tint = MaterialTheme.colorScheme.background,
                         modifier = Modifier
                             .clip(RoundedCornerShape(6.dp))
@@ -94,19 +94,13 @@ fun CartItemWidget(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${cartItem.quantity} in cart",
+                        text = "${cartItem.quantity} عدد",
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(horizontal = 6.dp, vertical = 4.dp)
-                            .alpha(.54f)
                     )
                     Spacer(Modifier.width(16.dp))
                     Text(
                         text = "${(df.format(cartItem.price * cartItem.quantity))}$",
-                        fontSize = 14.sp
+                        fontSize = 16.sp
                     )
                 }
             }
@@ -118,12 +112,12 @@ fun CartItemWidget(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Product not available on ${cartItem.quantity} unit")
+                Text("محصول به تعداد ${cartItem.quantity} وجود ندارد")
                 Spacer(Modifier.width(8.dp))
                 Button(
                     onClick = { onClickRemove(cartItem.productId) }
                 ) {
-                    Text("Remove from cart")
+                    Text("حذف از سبد خرید")
                 }
             }
     }

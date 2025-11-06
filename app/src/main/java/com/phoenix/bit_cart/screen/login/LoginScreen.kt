@@ -55,24 +55,24 @@ fun LoginScreen(
                     .padding(vertical = 24.dp, horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Log into Bit-Cart",
+                    text = "ورود به Bit-Cart",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "To continue using Bit-Cart you need to login or register"
+                    text = "برای ادامه استفاده از Bit-Cart باید وارد حساب کاربری خود شوید یا حساب جدید بسازید."
                 )
                 Spacer(Modifier.height(16.dp))
                 OutlinedTextField(
                     value = username,
                     onValueChange = onUsernameChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Email") },
+                    placeholder = { Text("ایمیل") },
                     isError = usernameError,
                 )
                 AnimatedVisibility(usernameError) {
                     Text(
-                        text = "Invalid email address",
+                        text = "آدرس ایمیل نامعتبر",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -81,14 +81,14 @@ fun LoginScreen(
                     value = password,
                     onValueChange = onPasswordChange,
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Password") },
+                    placeholder = { Text("رمزعبور") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     isError = passwordError
                 )
                 AnimatedVisibility(passwordError) {
                     Text(
-                        text = "Password must be 8 chars long with alphabets and digits",
+                        text = "رمزعبور باید شامل 8 کاراکتر انگلیسی به همراه کلمات و اعداد باشد",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -98,7 +98,7 @@ fun LoginScreen(
                     onClick = onClickLogin,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Login")
+                    Text(text = "ورود")
                 }
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(
@@ -106,7 +106,7 @@ fun LoginScreen(
                     onClick = onClickRegister,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Register")
+                    Text(text = "ساخت حساب")
                 }
                 Spacer(Modifier.height(24.dp))
                 HorizontalDivider(Modifier.fillMaxWidth().padding(horizontal = 16.dp))
@@ -123,7 +123,7 @@ fun LoginScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(Modifier.width(16.dp))
-                        Text(text = "Login with Google")
+                        Text(text = "ورود با حساب گوگل")
                     }
                 }
             }

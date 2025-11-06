@@ -20,6 +20,8 @@ data class OrderItem(
 
 @Serializable
 data class OrderDetails(
+    @SerialName("user_id")
+    val userId: String,
     @SerialName("order_id")
     val orderId: String,
 

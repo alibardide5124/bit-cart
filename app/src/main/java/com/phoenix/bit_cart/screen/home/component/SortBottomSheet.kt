@@ -31,23 +31,43 @@ fun SortBottomSheet(
     var sortProperties by remember { mutableStateOf(initialSortProperties) }
 
     Column(Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 16.dp)) {
-        SortBy.entries.forEach {
-            SortItem(
-                modifier = Modifier.fillMaxWidth(),
-                name = it.value,
-                isSelected = sortProperties.value == it,
-                onSelect = { sortProperties = sortProperties.copy(value = it) }
-            )
-        }
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "بر اساس نام",
+            isSelected = sortProperties.value == SortBy.NAME,
+            onSelect = { sortProperties = sortProperties.copy(value = SortBy.NAME) }
+        )
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "جدید ترین",
+            isSelected = sortProperties.value == SortBy.NEWEST,
+            onSelect = { sortProperties = sortProperties.copy(value = SortBy.NEWEST) }
+        )
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "بر اساس قیمت",
+            isSelected = sortProperties.value == SortBy.PRICE,
+            onSelect = { sortProperties = sortProperties.copy(value = SortBy.PRICE) }
+        )
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "بر اساس دسته بندی",
+            isSelected = sortProperties.value == SortBy.CATEGORY,
+            onSelect = { sortProperties = sortProperties.copy(value = SortBy.CATEGORY) }
+        )
         HorizontalDivider(Modifier.padding(vertical = 12.dp))
-        SortType.entries.forEach {
-            SortItem(
-                modifier = Modifier.fillMaxWidth(),
-                name = it.type,
-                isSelected = sortProperties.type == it,
-                onSelect = { sortProperties = sortProperties.copy(type = it) }
-            )
-        }
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "صعودی",
+            isSelected = sortProperties.type == SortType.ASCENDING,
+            onSelect = { sortProperties = sortProperties.copy(type = SortType.ASCENDING) }
+        )
+        SortItem(
+            modifier = Modifier.fillMaxWidth(),
+            name = "نزولی",
+            isSelected = sortProperties.type == SortType.DESCENDING,
+            onSelect = { sortProperties = sortProperties.copy(type = SortType.DESCENDING) }
+        )
 
         Button(
             onClick = { onClickApply(sortProperties) },
@@ -55,10 +75,9 @@ fun SortBottomSheet(
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Apply",
+                text = "اعمال",
                 fontSize = 18.sp
             )
-
         }
     }
 }

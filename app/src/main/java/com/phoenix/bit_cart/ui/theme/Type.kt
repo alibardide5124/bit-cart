@@ -8,12 +8,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.phoenix.bit_cart.R
 
-
-val Oxanium = FontFamily(
-    Font(R.font.oxanium_regular, FontWeight.Normal),
-    Font(R.font.oxanium_medium, FontWeight.Medium),
-    Font(R.font.oxanium_semibold, FontWeight.SemiBold),
-    Font(R.font.oxanium_bold, FontWeight.Bold),
+val Estedad = FontFamily(
+    Font(R.font.estedad_regular, FontWeight.Normal),
+    Font(R.font.estedad_medium, FontWeight.Medium),
+    Font(R.font.estedad_semibold, FontWeight.SemiBold),
+    Font(R.font.estedad_bold, FontWeight.Bold),
 )
 
 // Set of Material typography styles to start with
@@ -41,7 +40,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     )
     */
-).defaultFontFamily(Oxanium)
+).defaultFontFamily(Estedad)
 
 fun Typography.defaultFontFamily(fontFamily: FontFamily): Typography {
     return this.copy(
